@@ -5,7 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-
+	"github.com/gorilla/mux"
 	"github.com/iamhabbeboy/todoapp/database"
 	"github.com/iamhabbeboy/todoapp/models"
 )
@@ -31,7 +31,10 @@ func TodoForm(w http.ResponseWriter, r *http.Request) {
 func ProcessTodoForm(w http.ResponseWriter, r *http.Request) {
 
 	title := r.FormValue("title")
-
+	if title == "" {
+		http.Redirect(w, r, "/", 302)
+		return
+	}
 	db := database.Init()
 
 	todo := models.Todo{
@@ -41,8 +44,6 @@ func ProcessTodoForm(w http.ResponseWriter, r *http.Request) {
 	db.Create(&todo)
 
 	http.Redirect(w, r, "/", 302)
-	return
-
 }
 
 func TodoList(w http.ResponseWriter, r *http.Request) {
@@ -59,4 +60,17 @@ func TodoList(w http.ResponseWriter, r *http.Request) {
 	defer query.Close()
 
 	view.Execute(w, todos)
+}
+
+func TodoDelete(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	if id == "" {
+		http.Redirect(w, r, "/", 302)
+		return
+	}
+	db := database.Init()
+	var todos []models.Todo
+	db.Where("id = ?", id).Delete(&todos)
+	http.Redirect(w, r, "/", 302)
 }

@@ -1,7 +1,7 @@
 <h1>List page</h1>
 <ul>
     {{ range .}}
-        <li>{{ .Title }} </li>
+        <li>{{ .Title }} <a href="/delete/{{.Model.ID}}" style="color: red">&times;</a> </li>
     {{end}}
 </ul>
 
