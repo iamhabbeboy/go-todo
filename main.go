@@ -22,6 +22,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", controllers.TodoList)
 	r.HandleFunc("/add", controllers.TodoAdd)
+	r.HandleFunc("/delete/{id}", controllers.TodoDelete)
 	http.Handle("/", r)
 
 	// r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir(dir))))
